@@ -161,5 +161,5 @@ MIT. See [LICENSE](LICENSE).
 - **Year**: 2026
 - **Software required**: Python 3.8+
 - **Language**: Python
-- **URL**: *[pending — insert repository URL]*
+- **URL**: https://github.com/angel-intriago/aquifer-parameter-estimation-framework
 - **License**: MIT
