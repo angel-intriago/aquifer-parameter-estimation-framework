@@ -70,7 +70,7 @@ pip install pandas numpy geopandas scipy matplotlib seaborn
 | Column      | Type   | Description                    |
 |-------------|--------|--------------------------------|
 | `well_id`   | str    | Unique well identifier         |
-| `ground_elev_m` | float | Ground elevation (m)        |
+| `ground_elev_m` | float | Ground elevation (m.a.s.l.)        |
 | `static_level_m` | float | Static water level (m)     |
 | `dynamic_level_m` | float | Dynamic water level (m)   |
 | `pump_rate_m3h` | float | Average pumping rate (m³/h)  |
