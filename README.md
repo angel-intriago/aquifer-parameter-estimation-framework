@@ -2,7 +2,7 @@
 
 Automated framework using Differential Evolution metaheuristics to estimate aquifer hydraulic parameters (Hydraulic Conductivity $K$, Storage Coefficient $S$) and pumping rates ($Q$) in high-interference urban settings.
 
-The method analyzes water level recovery curves (nightly or daily) and accounts for variable saturated thickness and interference from neighboring wells.
+The method analyzes water level recovery curves and accounts for variable saturated thickness and interference from neighboring wells.
 
 ## Purpose
 
