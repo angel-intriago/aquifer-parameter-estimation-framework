@@ -36,8 +36,6 @@ class AdvancedHydrogeologicalCalibrator:
                  operation_mode: str = 'complete', # 'complete' or 'filtering_only'
                  
                  # Methods and visualization parameters
-                 extraction_method: str = 'daily',
-                 selection_method: str = 'original',
                  calibration_method: str = 'differential_evolution',
                  consider_interference: bool = False,
                  generate_event_plots: bool = False,
@@ -88,8 +86,6 @@ class AdvancedHydrogeologicalCalibrator:
         # 1. Parameter assignment to class attributes
         self.run_name = run_name
         self.operation_mode = operation_mode
-        self.extraction_method = extraction_method
-        self.selection_method = selection_method
         self.calibration_method = calibration_method
         self.consider_interference = consider_interference
         self.generate_event_plots = generate_event_plots
@@ -139,7 +135,7 @@ class AdvancedHydrogeologicalCalibrator:
             subfolder_name = self.run_name
         else:
             timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-            subfolder_name = f"{timestamp}_{self.extraction_method}_{self.calibration_method}"
+            subfolder_name = f"{timestamp}_{self.calibration_method}"
             
         self.results_dir = os.path.join('results', subfolder_name)
         self.viz_data_dir = os.path.join(self.results_dir, 'visualization_data')
