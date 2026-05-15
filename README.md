@@ -15,7 +15,6 @@ The method analyzes water level recovery curves and accounts for variable satura
 
 ```
 ├── main.py                          # Entry point for the full pipeline
-├── example_run.py                   # Quick test using demo_data/
 ├── requirements.txt                 # Pinned dependencies
 ├── .gitignore
 ├── LICENSE                          # MIT License
@@ -33,7 +32,8 @@ The method analyzes water level recovery curves and accounts for variable satura
     ├── public_supply_wells.shp              # Public pumping wells (3 wells)
     ├── private_supply_wells.shp             # Private pumping wells (10 wells)
     ├── stratigraphy_public_wells.csv        # Stratigraphy (public wells)
-    └── stratigraphy_private_wells.csv       # Stratigraphy (private wells)
+    ├── stratigraphy_private_wells.csv       # Stratigraphy (private wells)
+    └── study_area.shp                       # Study area boundary
 
 > **Note:** Each shapefile includes companion files (`.dbf`, `.shx`, `.prj`, etc.).
 
@@ -92,22 +92,17 @@ Lithological information per well (depth, geological formation, thickness, etc.)
 
 ## Usage
 
-1. **Prepare data**: For a quick test, `demo_data/` is ready to use with `example_run.py`. For the full pipeline, place the complete dataset in `data/`.
-2. **Configure `main.py`**: Verify paths point to the correct files. Adjust parameters such as:
-   - `consider_interference` (`True`/`False`): whether to model interference between neighboring wells.
-   - Shapefile and CSV paths.
-   - Filtering parameters (`min_points`, `max_slope`, etc.) to adjust event detection sensitivity.
-3. **Run**:
+1. **Run**: `demo_data/` is ready to use out of the box.
    ```bash
-   python example_run.py   # quick demo
-   python main.py          # full pipeline (requires full dataset)
+   python main.py
    ```
+2. **Full dataset**: If you have access to the complete dataset, place it in a `data/` directory and update `DATA_DIR = 'data'` in `main.py`.
 
-The script creates a timestamped subfolder in `results/` with all generated CSVs and plots.
+The script creates a timestamped subfolder in `results/` with all generated CSVs.
 
 ## Outputs
 
-After a complete run, `results/YYYY-MM-DD_HH-MM-SS/` contains:
+After a run, `results/YYYY-MM-DD_HH-MM-SS/` contains:
 
 | File | Description |
 |------|-------------|
@@ -116,22 +111,8 @@ After a complete run, `results/YYYY-MM-DD_HH-MM-SS/` contains:
 | `aggregated_hydraulic_parameters_summary.json` | Aggregated hydraulic parameter summary |
 | `filtering_summary_by_stage.json` | Per-stage filtering statistics |
 | `discards_stage_*.csv` | Events discarded at each filter stage |
-| `3_result_boxplot_K.png` | Hydraulic conductivity boxplot by formation |
-| `4_result_map_T.png` | Transmissivity map |
-| `5_result_scatter_Q.png` | Pumping rate scatter plot |
-| `6_analysis_parameter_correlation.png` | Parameter correlation matrix |
-| `7_analysis_error_map.png` | Calibration error map |
-| `8_parameter_evolution_iteration.png` | Parameter evolution across iterations |
-| `neighborhood_figures/` | Interference plots per neighborhood |
-| `recovery_event_figures/` | Recovery curves for each event |
 
-## Quick test
-
-```bash
-python example_run.py
-```
-
-Runs a simplified version of the pipeline with the demo dataset (single central well with 3 public neighbours).
+Summary plots can be enabled by setting `generate_summary_plots: True` in `main.py`.
 
 ## Dataset notes
 
