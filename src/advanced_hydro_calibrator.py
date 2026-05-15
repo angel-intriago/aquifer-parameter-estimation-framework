@@ -38,7 +38,8 @@ class AdvancedHydrogeologicalCalibrator:
                  # Methods and visualization parameters
                  calibration_method: str = 'differential_evolution',
                  consider_interference: bool = False,
-                 generate_event_plots: bool = False,
+                  generate_event_plots: bool = False,
+                 generate_summary_plots: bool = True,
 
                  # Search range parameters
                  conductivity_ranges: Optional[Dict[str, Tuple[float, float]]] = None,
@@ -89,6 +90,7 @@ class AdvancedHydrogeologicalCalibrator:
         self.calibration_method = calibration_method
         self.consider_interference = consider_interference
         self.generate_event_plots = generate_event_plots
+        self.generate_summary_plots = generate_summary_plots
         self.conductivity_ranges = conductivity_ranges
         self.storage_range = storage_range
         self.calibrate_target_well_flow = calibrate_target_well_flow
@@ -698,7 +700,8 @@ class AdvancedHydrogeologicalCalibrator:
                     iter_results_df, wells_to_calibrate
                 )
 
-        self._generate_final_neighborhood_plots(pd.DataFrame(self.calibration_results), neighborhood_info_cache)
+        if self.generate_summary_plots:
+            self._generate_final_neighborhood_plots(pd.DataFrame(self.calibration_results), neighborhood_info_cache)
 
     def save_and_aggregate_results(self):
         print("\n--- 4. Aggregating and Saving Final Results ---")
@@ -756,9 +759,10 @@ class AdvancedHydrogeologicalCalibrator:
             json.dump(aggregated_summary, f, indent=4)
         print(f"-> Aggregated parameters summary saved in: {summary_path}")
 
-        print("\n--- 5. Generating Summary and Analysis Plots ---")
-        
-        readme_content = """
+        if self.generate_summary_plots:
+            print("\n--- 5. Generating Summary and Analysis Plots ---")
+
+            readme_content = """
 # Summary Plot Data
 
 The data required to generate the summary plots (`plot_scatter_Q`, `plot_boxplot_K`, `plot_map_T`, `plot_correlation_heatmap`, `plot_error_map`) are mainly located in two places:
@@ -776,20 +780,20 @@ The data required to generate the summary plots (`plot_scatter_Q`, `plot_boxplot
 
 To recreate the plots, load these files into a Python script and use the corresponding visualization functions from the `src.visualization` module.
 """
-        readme_path = os.path.join(self.summary_data_dir, 'README.md')
-        with open(readme_path, 'w', encoding='utf-8') as f:
-            f.write(readme_content)
+            readme_path = os.path.join(self.summary_data_dir, 'README.md')
+            with open(readme_path, 'w', encoding='utf-8') as f:
+                f.write(readme_content)
 
-        try:
-            plot_scatter_Q(detailed_df, self.public_wells, self.results_dir)
-            plot_boxplot_K(detailed_df, self.results_dir)
-            plot_map_T(detailed_df, self.public_wells, self.results_dir)
-            plot_correlation_heatmap(detailed_df, self.results_dir)
-            plot_error_map(detailed_df, self.public_wells, self.results_dir)
-            plot_iteration_history(self.iteration_summary_history, self.results_dir)
+            try:
+                plot_scatter_Q(detailed_df, self.public_wells, self.results_dir)
+                plot_boxplot_K(detailed_df, self.results_dir)
+                plot_map_T(detailed_df, self.public_wells, self.results_dir)
+                plot_correlation_heatmap(detailed_df, self.results_dir)
+                plot_error_map(detailed_df, self.public_wells, self.results_dir)
+                plot_iteration_history(self.iteration_summary_history, self.results_dir)
 
-        except Exception as e:
-            print(f"WARNING: Error occurred while generating summary plots: {e}")
+            except Exception as e:
+                print(f"WARNING: Error occurred while generating summary plots: {e}")
         
         print("\n--- Conductivity (K) Summary in m/d (Median) ---")
         for formation, stats in aggregated_summary.get('hydraulic_parameters', {}).get('Conductivity_K_md', {}).items():

@@ -155,14 +155,14 @@ def plot_map_T(detailed_df, public_wells, results_dir):
         return
 
     # --- Load and transform Municipality Shapefile ---
-    shapefile_path = os.path.join('data', 'study_area.shp')
-    try:
-        municipality_gdf = gpd.read_file(shapefile_path)
-        # Ensure CRS matches wells
-        municipality_gdf = municipality_gdf.to_crs(gdf_calibrated.crs)
-    except Exception as e:
-        print(f"WARNING: Could not load or transform municipality shapefile. Error: {e}")
-        municipality_gdf = None
+    municipality_gdf = None
+    for candidate in ['data/study_area.shp', 'demo_data/study_area.shp']:
+        if os.path.exists(candidate):
+            try:
+                municipality_gdf = gpd.read_file(candidate).to_crs(gdf_calibrated.crs)
+            except Exception:
+                pass
+            break
 
     fig, ax = plt.subplots(figsize=(12, 12))
     
@@ -255,12 +255,14 @@ def plot_error_map(detailed_df, public_wells, results_dir):
         print("WARNING: No calibrated wells with geometry found to generate error map.")
         return
 
-    shapefile_path = os.path.join('data', 'study_area.shp')
-    try:
-        municipality_gdf = gpd.read_file(shapefile_path).to_crs(gdf_calibrated.crs)
-    except Exception as e:
-        print(f"WARNING: Could not load municipality shapefile. Error: {e}")
-        municipality_gdf = None
+    municipality_gdf = None
+    for candidate in ['data/study_area.shp', 'demo_data/study_area.shp']:
+        if os.path.exists(candidate):
+            try:
+                municipality_gdf = gpd.read_file(candidate).to_crs(gdf_calibrated.crs)
+            except Exception:
+                pass
+            break
 
     fig, ax = plt.subplots(figsize=(12, 12))
     

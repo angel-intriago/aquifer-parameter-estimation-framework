@@ -11,11 +11,11 @@ def run_example():
 
     # Ensure data paths are correct (relative to the repository root)
     data_paths = {
-        'observed_df_path': os.path.join('data', 'head_time_series.csv'),
-        'private_wells_path': os.path.join('data', 'private_supply_wells.shp'),
-        'public_wells_path': os.path.join('data', 'public_supply_wells.shp'),
-        'private_stratigraphy_path': os.path.join('data', 'stratigraphy_private_wells.csv'),
-        'public_stratigraphy_path': os.path.join('data', 'stratigraphy_public_wells.csv')
+        'observed_df_path': os.path.join('demo_data', 'head_time_series.csv'),
+        'private_wells_path': os.path.join('demo_data', 'private_supply_wells.shp'),
+        'public_wells_path': os.path.join('demo_data', 'public_supply_wells.shp'),
+        'private_stratigraphy_path': os.path.join('demo_data', 'stratigraphy_private_wells.csv'),
+        'public_stratigraphy_path': os.path.join('demo_data', 'stratigraphy_public_wells.csv')
     }
 
     # Verify if data exists

@@ -5,6 +5,9 @@ __pycache__/
 dist/
 build/
 
+# Full dataset (not included in repo — only demo_data is provided)
+data/
+
 # Results
 results/
 

@@ -15,7 +15,7 @@ The method analyzes water level recovery curves and accounts for variable satura
 
 ```
 ├── main.py                          # Entry point for the full pipeline
-├── example_run.py                   # Simplified test run
+├── example_run.py                   # Quick test using demo_data/
 ├── requirements.txt                 # Pinned dependencies
 ├── .gitignore
 ├── LICENSE                          # MIT License
@@ -28,13 +28,12 @@ The method analyzes water level recovery curves and accounts for variable satura
 │   ├── calibration/                 # Optimization logic
 │   ├── event_extraction/            # Recovery event identification and filtering
 │   └── utils/                       # Helper functions
-└── data/
-    ├── head_time_series.csv                 # Water level time series
-    ├── public_supply_wells.shp              # Public pumping wells
-    ├── private_supply_wells.shp             # Private pumping wells
+└── demo_data/
+    ├── head_time_series.csv                 # Water level time series (1 well)
+    ├── public_supply_wells.shp              # Public pumping wells (3 wells)
+    ├── private_supply_wells.shp             # Private pumping wells (10 wells)
     ├── stratigraphy_public_wells.csv        # Stratigraphy (public wells)
-    ├── stratigraphy_private_wells.csv       # Stratigraphy (private wells)
-    └── study_area.shp                       # Study area boundary
+    └── stratigraphy_private_wells.csv       # Stratigraphy (private wells)
 
 > **Note:** Each shapefile includes companion files (`.dbf`, `.shx`, `.prj`, etc.).
 
@@ -89,20 +88,19 @@ pip install pandas numpy geopandas scipy matplotlib seaborn
 
 Lithological information per well (depth, geological formation, thickness, etc.). All columns are used by the pipeline.
 
-### 5. Study area boundary — `study_area.shp`
 
-Polygon defining the study area (EPSG:4674 — SIRGAS 2000 geographic). Used for background maps.
 
 ## Usage
 
-1. **Prepare data**: Place the files listed above in `data/`.
+1. **Prepare data**: For a quick test, `demo_data/` is ready to use with `example_run.py`. For the full pipeline, place the complete dataset in `data/`.
 2. **Configure `main.py`**: Verify paths point to the correct files. Adjust parameters such as:
    - `consider_interference` (`True`/`False`): whether to model interference between neighboring wells.
    - Shapefile and CSV paths.
    - Filtering parameters (`min_points`, `max_slope`, etc.) to adjust event detection sensitivity.
 3. **Run**:
    ```bash
-   python main.py
+   python example_run.py   # quick demo
+   python main.py          # full pipeline (requires full dataset)
    ```
 
 The script creates a timestamped subfolder in `results/` with all generated CSVs and plots.
@@ -133,7 +131,19 @@ After a complete run, `results/YYYY-MM-DD_HH-MM-SS/` contains:
 python example_run.py
 ```
 
-Runs a simplified version of the pipeline with existing data.
+Runs a simplified version of the pipeline with the demo dataset (single central well with 3 public neighbours).
+
+## Dataset notes
+
+The repository includes a **demo dataset** (`demo_data/`) containing only the
+neighbourhood of a single target well (within the 2000 m search radius used by
+the calibration code): 3 public wells and 10 private wells. Coordinates were
+randomised preserving the radial distance to the target well while assigning
+arbitrary angles, so the interference calculation produces identical results
+but the spatial pattern cannot be matched to the published paper's map.
+
+The **full dataset** is not included in the repository. If you have access to the
+complete dataset, place it in a `data/` directory and use `main.py` instead.
 
 ## Troubleshooting
 

@@ -1,7 +1,10 @@
 import os
+import warnings
 from datetime import datetime
 from src.data_loading import load_hydrogeological_data
 from src.advanced_hydro_calibrator import AdvancedHydrogeologicalCalibrator
+
+warnings.filterwarnings("ignore", category=RuntimeWarning, module="seaborn")
 
 def main():
     """
@@ -11,12 +14,14 @@ def main():
 
     print(f"Working directory: {os.getcwd()}")
 
+    # Point to demo_data/ by default; replace with 'data' for the full dataset
+    DATA_DIR = 'demo_data'
     data_paths = {
-        'observed_df_path': os.path.join('data', 'head_time_series.csv'),
-        'private_wells_path': os.path.join('data', 'private_supply_wells.shp'),
-        'public_wells_path': os.path.join('data', 'public_supply_wells.shp'),
-        'private_stratigraphy_path': os.path.join('data', 'stratigraphy_private_wells.csv'),
-        'public_stratigraphy_path': os.path.join('data', 'stratigraphy_public_wells.csv')
+        'observed_df_path': os.path.join(DATA_DIR, 'head_time_series.csv'),
+        'private_wells_path': os.path.join(DATA_DIR, 'private_supply_wells.shp'),
+        'public_wells_path': os.path.join(DATA_DIR, 'public_supply_wells.shp'),
+        'private_stratigraphy_path': os.path.join(DATA_DIR, 'stratigraphy_private_wells.csv'),
+        'public_stratigraphy_path': os.path.join(DATA_DIR, 'stratigraphy_public_wells.csv')
     }
 
     try:
@@ -32,10 +37,11 @@ def main():
     run_params = {
         'run_name': current_run_name,
         'operation_mode': 'complete', # Options: 'complete', 'filtering_only'
-        'consistency_iterations': 3,
+        'consistency_iterations': 1,
         'calibration_method': 'differential_evolution',
         'consider_interference': False,
-        'generate_event_plots': True,
+        'generate_event_plots': False,
+        'generate_summary_plots': False,
         'filter_slope_outliers': True,
         'min_r_squared_selection': 0.95,
         'min_drawdown_ratio': 0.5,
