@@ -11,6 +11,38 @@ The method analyzes water level recovery curves and accounts for variable satura
 3. **Optimize parameters**: Use Differential Evolution to find the best-fit hydraulic parameters and actual pumping rates that explain the observed recovery slopes.
 4. **Ensure spatial consistency**: Iteratively refine parameters across interconnected neighborhoods.
 
+## Methodology
+
+The framework is built on the **Cooper-Jacob approximation** of the Theis solution for confined aquifer recovery. Recovery events detected in the time series are fitted with a semi-logarithmic model where the slope $m$ of $s$ vs. $\log t$ is proportional to the pumping rate and inversely proportional to transmissivity.
+
+**Inter-well interference (IWI)** is modelled via superposition:
+
+$$m_{\text{calc}} = m_{\text{target}} + \sum_{i=1}^{n} m_i \cdot f(r_i)$$
+
+where $f(r_i)$ is a distance-dependent decay function. Wells within a **2 km radius** of the target well are included as potential interferers.
+
+**Differential Evolution** (SciPy implementation, 300 generations, population size = $25 \times N_{\text{params}}$, mutation $F \in [0.5, 1.0]$, crossover $CR = 0.7$, seed $= 42$) minimises the RMSE between observed and calculated slopes. A local L-BFGS-B polish refines the final solution. The calibration is embedded in an **iterative spatial-consistency loop** (3 iterations by default) that propagates parameters across interconnected well neighbourhoods.
+
+### Search ranges (defaults)
+
+Hydraulic conductivity per geological formation:
+
+| Formation               | Minimum (mm/day) | Maximum (mm/day) |
+|-------------------------|------------------|------------------|
+| Botucatu                | 0.10             | 15.00            |
+| Upper Piramboia         | 0.01             | 4.00             |
+| Lower Piramboia         | 0.01             | 2.00             |
+
+Pumping rate as a percentage of reported values:
+
+| Parameter        | Global range (%) | Personalized range (%) |
+|------------------|------------------|------------------------|
+| $Q_{\text{target}}$ | 90–110        | 50–200                 |
+| $Q_i$ (public)   | 90–110           | 50–200                 |
+| $Q_i$ (private)  | 80–200           | 25–400                 |
+
+Storativity $S$ is searched in $[1 \times 10^{-5},\; 1 \times 10^{-2}]$.
+
 ## Repository structure
 
 ```
@@ -92,13 +124,23 @@ Lithological information per well (depth, geological formation, thickness, etc.)
 
 ## Usage
 
-1. **Run**: `demo_data/` is ready to use out of the box.
-   ```bash
-   python main.py
-   ```
-2. **Full dataset**: If you have access to the complete dataset, place it in a `data/` directory and update `DATA_DIR = 'data'` in `main.py`.
+```bash
+python main.py
+```
 
-The script creates a timestamped subfolder in `results/` with all generated CSVs.
+The demo dataset in `demo_data/` is ready to use. For the full dataset, place it in a `data/` directory and set `DATA_DIR = 'data'` in `main.py`.
+
+Key configuration parameters in `main.py`:
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `consider_interference` | `True` | Model interference from neighbouring wells |
+| `min_r_squared_selection` | `0.95` | Minimum R² to accept a recovery event |
+| `min_drawdown_ratio` | `0.5` | Minimum drawdown / max drawdown ratio |
+| `min_events_per_well` | `3` | Minimum events required for a well to be calibrated |
+| `consistency_iterations` | `3` | Number of iterative refinement cycles |
+
+Results are saved in `results/YYYY-MM-DD_HH-MM-SS/`.
 
 ## Outputs
 

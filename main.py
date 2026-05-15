@@ -37,9 +37,9 @@ def main():
     run_params = {
         'run_name': current_run_name,
         'operation_mode': 'complete', # Options: 'complete', 'filtering_only'
-        'consistency_iterations': 1,
+        'consistency_iterations': 3,
         'calibration_method': 'differential_evolution',
-        'consider_interference': False,
+        'consider_interference': True,
         'generate_event_plots': False,
         'generate_summary_plots': False,
         'filter_slope_outliers': True,

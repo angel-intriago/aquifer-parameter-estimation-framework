@@ -22,6 +22,10 @@ results/
 .DS_Store
 Thumbs.db
 
+# Manuscript (not in repo)
+Manuscript_Computers_Geosciences.docx
+_paper_text.txt
+
 # Environment
 .env
 .venv/
